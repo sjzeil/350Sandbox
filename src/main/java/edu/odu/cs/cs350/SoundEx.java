@@ -90,6 +90,11 @@ public class SoundEx {
 		return encoded;
 	}
 
+	/**
+	 * Remove letters encoded as 0 (vowels and unvoiced consonants)
+	 * @param encoded the string to modify
+	 * @return the modified string
+	 */
 	private static String removeInaudibleLetters(String encoded) {
 		StringBuffer buff;
 		buff = new StringBuffer();
@@ -103,6 +108,11 @@ public class SoundEx {
 		return encoded;
 	}
 
+	/**
+	 * Replace any consecutive duplicates by a single instance.
+	 * @param encoded the string to modify
+	 * @return the modified string
+	 */
 	private static String removeAdjacentDuplicates(String encoded) {
 		StringBuffer buff;
 		buff = new StringBuffer();
@@ -119,6 +129,12 @@ public class SoundEx {
 		return encoded;
 	}
 
+	/**
+	 * Re-encode the letters of a word to merge letters that sound similar into
+	 * a single character code.
+	 * @param buff the string to modify
+	 * @return the modified string
+	 */
 	private static String letterEncoding(StringBuffer buff) {
 		String encoded;
 		encoded = buff.toString();
@@ -135,6 +151,11 @@ public class SoundEx {
 		return encoded;
 	}
 
+	/**
+	 * Apply all transformation rules that apply to the interior of a word.
+	 * @param encoded the word to modify
+	 * @return the modified string
+	 */
 	private static StringBuffer innerTransformations(String encoded) {
 		StringBuffer buff = new StringBuffer();
 		buff.append(encoded.charAt(0));
@@ -146,6 +167,13 @@ public class SoundEx {
 		return buff;
 	}
 
+	/**
+	 * Attempt all inner transformation rules at a specific position in a string.
+	 * @param encoded the string to modify
+	 * @param buff the space to store modified characters
+	 * @param pos the position of encoded at which to attempt this
+	 * @return the position at which to attempt the next set of transformations
+	 */
 	private static int attemptTransformationsAtPosition(String encoded, StringBuffer buff, int pos) {
 		int pos0 = pos;
 		pos = checkAllTransformations(encoded, buff, pos);
@@ -156,6 +184,13 @@ public class SoundEx {
 		return pos;
 	}
 
+	/**
+	 * Check each inner substitution rule against the indicated position in the string.
+	 * @param encoded the input string
+	 * @param buff accumulated changes to that string
+	 * @param pos position within encoded to be checked
+	 * @return
+	 */
 	private static int checkAllTransformations(String encoded, StringBuffer buff, int pos) {
 		for (Substitutions subst : innerSubst) {
 			if (keyMatchesAtThisPosition(encoded, pos, subst)) {
@@ -167,11 +202,24 @@ public class SoundEx {
 		return pos;
 	}
 
+	/**
+	 * Test to see if the indicated string can match a substitution key at
+	 * a specific position.
+	 * @param encoded the string to be checked
+	 * @param pos ths position within encoded at which to check
+	 * @param subst a substitution
+	 * @return true if the substitution key matches the contents of encoded starting at pos
+	 */
 	private static boolean keyMatchesAtThisPosition(String encoded, int pos, Substitutions subst) {
 		return pos < encoded.length() - subst.getKey().length() &&
 				(encoded.substring(pos, pos + subst.getKey().length()).equals(subst.getKey()));
 	}
 
+	/**
+	 * Apply special transformation rules that work on the end of a word.
+	 * @param encoded the string to examine
+	 * @return the modified string
+	 */
 	private static String suffixTransformations(String encoded) {
 		for (Substitutions subst : suffixSubst) {
 			if (encoded.endsWith(subst.getKey())) {
@@ -183,6 +231,11 @@ public class SoundEx {
 		return encoded;
 	}
 
+	/**
+	 * Apply special transformation rules that work on the beginning of a word.
+	 * @param encoded the string to examine
+	 * @return the modified string
+	 */
 	private static String prefixTransformations(String encoded) {
 		for (Substitutions subst : prefixSubst) {
 			if (encoded.startsWith(subst.getKey())) {
