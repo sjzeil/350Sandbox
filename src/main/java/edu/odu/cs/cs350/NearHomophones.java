@@ -69,6 +69,11 @@ public class NearHomophones {
 
     }
 
+    /**
+     * Print the report on most common sound-alikes.
+     * @param soundAlike mapping of soundex codes to words
+     * @param soundExCodes list of all soundexCodes
+     */
     private void report(Map<String, Set<String>> soundAlike, ArrayList<String> soundExCodes) {
         for (int i = 0; i < 10; ++i) {
             System.out.print(soundExCodes.get(i) + " is the code for");
@@ -80,6 +85,12 @@ public class NearHomophones {
         }
     }
 
+    /**
+     * Collect all words into a mapping by soundex code.
+     * @param dictionary all words to be considered
+     * @param soundAlike a mapping from soundex codes to words
+     * @param soundExCodes list of all soundex codes
+     */
     private void collectNearHomophones(ArrayList<String> dictionary, Map<String, Set<String>> soundAlike,
             ArrayList<String> soundExCodes) {
         for (String word : dictionary) {
@@ -94,6 +105,11 @@ public class NearHomophones {
         }
     }
 
+    /**
+     * Read the dictionary file.
+     * 
+     * @param dictionary list of words read from the file (output)
+     */
     private void loadDictionary(ArrayList<String> dictionary) {
         Path inputFile = Paths.get("src", "test", "data", "words.txt");
         try (
