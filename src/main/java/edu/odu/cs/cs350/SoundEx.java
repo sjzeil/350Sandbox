@@ -69,23 +69,73 @@ public class SoundEx {
 		}
 
 		// prefix transformations
-		for (Substitutions subst : prefixSubst) {
-			if (encoded.startsWith(subst.getKey())) {
-				encoded = subst.getReplacement() + encoded.substring(subst.getKey().length());
-				break;
-			}
-		}
+		encoded = prefixTransformations(encoded);
 
 		// ending transformations
-		for (Substitutions subst : suffixSubst) {
-			if (encoded.endsWith(subst.getKey())) {
-				encoded = encoded.substring(0, encoded.length() - subst.getKey().length())
-						+ subst.getReplacement();
-				break;
-			}
-		}
+		encoded = suffixTransformations(encoded);
 
 		// Inner substitutions
+		StringBuffer buff = innerTransformations(encoded);
+
+		//
+		// Letter encoding
+		encoded = letterEncoding(buff);
+
+		// Remove adjacent duplicates
+		encoded = removeAdjacentDuplicates(encoded);
+
+		// Remove all 0's (vowels and other barely-sounded letters)
+		encoded = removeInaudibleLetters(encoded);
+
+		return encoded;
+	}
+
+	private static String removeInaudibleLetters(String encoded) {
+		StringBuffer buff;
+		buff = new StringBuffer();
+		for (int i = 0; i < encoded.length(); ++i) {
+			char c = encoded.charAt(i);
+			if (c != '0') {
+				buff.append(c);
+			}
+		}
+		encoded = buff.toString();
+		return encoded;
+	}
+
+	private static String removeAdjacentDuplicates(String encoded) {
+		StringBuffer buff;
+		buff = new StringBuffer();
+		buff.append(encoded.charAt(0));
+		char lastChar = encoded.charAt(0);
+		for (int i = 1; i < encoded.length(); ++i) {
+			char c = encoded.charAt(i);
+			if (c != lastChar) {
+				buff.append(c);
+				lastChar = c;
+			}
+		}
+		encoded = buff.toString();
+		return encoded;
+	}
+
+	private static String letterEncoding(StringBuffer buff) {
+		String encoded;
+		encoded = buff.toString();
+		buff = new StringBuffer();
+		buff.append(encoded.charAt(0));
+		for (int posn = 1; posn < encoded.length(); ++posn) {
+			char c = encoded.charAt(posn);
+			if (c >= 'a' && c <= 'z')
+				buff.append(letterEncoding.charAt(c - 'a'));
+			else
+				buff.append(c);
+		}
+		encoded = buff.toString();
+		return encoded;
+	}
+
+	private static StringBuffer innerTransformations(String encoded) {
 		StringBuffer buff = new StringBuffer();
 		buff.append(encoded.charAt(0));
 
@@ -106,44 +156,27 @@ public class SoundEx {
 				++pos;
 			}
 		}
+		return buff;
+	}
 
-		//
-		// Letter encoding
-		encoded = buff.toString();
-		buff = new StringBuffer();
-		buff.append(encoded.charAt(0));
-		for (int posn = 1; posn < encoded.length(); ++posn) {
-			char c = encoded.charAt(posn);
-			if (c >= 'a' && c <= 'z')
-				buff.append(letterEncoding.charAt(c - 'a'));
-			else
-				buff.append(c);
-		}
-		encoded = buff.toString();
-
-		// Remove adjacent duplicates
-		buff = new StringBuffer();
-		buff.append(encoded.charAt(0));
-		char lastChar = encoded.charAt(0);
-		for (int i = 1; i < encoded.length(); ++i) {
-			char c = encoded.charAt(i);
-			if (c != lastChar) {
-				buff.append(c);
-				lastChar = c;
+	private static String suffixTransformations(String encoded) {
+		for (Substitutions subst : suffixSubst) {
+			if (encoded.endsWith(subst.getKey())) {
+				encoded = encoded.substring(0, encoded.length() - subst.getKey().length())
+						+ subst.getReplacement();
+				break;
 			}
 		}
-		encoded = buff.toString();
+		return encoded;
+	}
 
-		// Remove all 0's (vowels and other barely-sounded letters)
-		buff = new StringBuffer();
-		for (int i = 0; i < encoded.length(); ++i) {
-			char c = encoded.charAt(i);
-			if (c != '0') {
-				buff.append(c);
+	private static String prefixTransformations(String encoded) {
+		for (Substitutions subst : prefixSubst) {
+			if (encoded.startsWith(subst.getKey())) {
+				encoded = subst.getReplacement() + encoded.substring(subst.getKey().length());
+				break;
 			}
 		}
-		encoded = buff.toString();
-
 		return encoded;
 	}
 
