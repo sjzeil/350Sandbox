@@ -141,22 +141,27 @@ public class SoundEx {
 
 		int pos = 1;
 		while (pos < encoded.length()) {
-			boolean done = false;
-			for (Substitutions subst : innerSubst) {
-				if (pos < encoded.length() - subst.getKey().length()) {
-					if (encoded.substring(pos, pos + subst.getKey().length()).equals(subst.getKey())) {
-						buff.append(subst.getReplacement());
-						done = true;
-						pos += subst.getKey().length();
-					}
-				}
-			}
-			if (!done) {
-				buff.append(encoded.charAt(pos));
-				++pos;
-			}
+			pos = attemptTransformationsAtPosition(encoded, buff, pos);
 		}
 		return buff;
+	}
+
+	private static int attemptTransformationsAtPosition(String encoded, StringBuffer buff, int pos) {
+		boolean done = false;
+		for (Substitutions subst : innerSubst) {
+			if (pos < encoded.length() - subst.getKey().length()) {
+				if (encoded.substring(pos, pos + subst.getKey().length()).equals(subst.getKey())) {
+					buff.append(subst.getReplacement());
+					done = true;
+					pos += subst.getKey().length();
+				}
+			}
+		}
+		if (!done) {
+			buff.append(encoded.charAt(pos));
+			++pos;
+		}
+		return pos;
 	}
 
 	private static String suffixTransformations(String encoded) {
