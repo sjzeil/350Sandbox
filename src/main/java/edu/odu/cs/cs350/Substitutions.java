@@ -6,7 +6,7 @@ package edu.odu.cs.cs350;
 public class Substitutions {
 
     private String key;
-    private String repl;
+    private String replacement;
 
     /**
      * Create oe substitution object
@@ -15,7 +15,7 @@ public class Substitutions {
      */
     public Substitutions(String key, String replacement) {
         this.key = key;
-        this.repl = replacement;
+        this.replacement = replacement;
     }
 
     /**
@@ -29,7 +29,7 @@ public class Substitutions {
      * @return the replacement string
      */
     public String getReplacement() {
-        return repl;
+        return replacement;
     }
 
     

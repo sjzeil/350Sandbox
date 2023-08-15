@@ -1,8 +1,12 @@
 package edu.odu.cs.cs350;
 
+/**
+ * Provides the soundex function to encode strings into a form allowing them
+ * to be compared for "sounding alike".
+ */
 public class SoundEx {
 
-	private final static Substitutions[] prefixSubst = {
+	private final static Substitutions[] prefixSubstitutions = {
 			new Substitutions("hough", "h5"),
 			new Substitutions("cough", "kof"),
 			new Substitutions("chough", "sof"),
@@ -26,13 +30,13 @@ public class SoundEx {
 			new Substitutions("c", "k")
 	};
 
-	private final static Substitutions[] suffixSubst = {
+	private final static Substitutions[] suffixSubstitutions = {
 			new Substitutions("gn", "n"),
 			new Substitutions("gns", "ns"),
 			new Substitutions("mb", "m")
 	};
 
-	private final static Substitutions[] innerSubst = {
+	private final static Substitutions[] innerSubstitutions = {
 			new Substitutions("ce", "se"),
 			new Substitutions("ci", "se"),
 			new Substitutions("cy", "s"),
@@ -62,8 +66,8 @@ public class SoundEx {
 	 * 
 	 * 
 	 */
-	public static String soundEx(final String str) {
-		String encoded = str.toLowerCase();
+	public static String soundEx(final String string) {
+		String encoded = string.toLowerCase();
 		if (encoded.equals("")) {
 			return "";
 		}
@@ -140,8 +144,8 @@ public class SoundEx {
 		encoded = buff.toString();
 		buff = new StringBuffer();
 		buff.append(encoded.charAt(0));
-		for (int posn = 1; posn < encoded.length(); ++posn) {
-			char c = encoded.charAt(posn);
+		for (int position = 1; position < encoded.length(); ++position) {
+			char c = encoded.charAt(position);
 			if (c >= 'a' && c <= 'z')
 				buff.append(letterEncoding.charAt(c - 'a'));
 			else
@@ -160,9 +164,9 @@ public class SoundEx {
 		StringBuffer buff = new StringBuffer();
 		buff.append(encoded.charAt(0));
 
-		int pos = 1;
-		while (pos < encoded.length()) {
-			pos = attemptTransformationsAtPosition(encoded, buff, pos);
+		int position = 1;
+		while (position < encoded.length()) {
+			position = attemptTransformationsAtPosition(encoded, buff, position);
 		}
 		return buff;
 	}
@@ -171,48 +175,48 @@ public class SoundEx {
 	 * Attempt all inner transformation rules at a specific position in a string.
 	 * @param encoded the string to modify
 	 * @param buff the space to store modified characters
-	 * @param pos the position of encoded at which to attempt this
+	 * @param position the position of encoded at which to attempt this
 	 * @return the position at which to attempt the next set of transformations
 	 */
-	private static int attemptTransformationsAtPosition(String encoded, StringBuffer buff, int pos) {
-		int pos0 = pos;
-		pos = checkAllTransformations(encoded, buff, pos);
-		if (pos0 == pos) {
-			buff.append(encoded.charAt(pos));
-			++pos;
+	private static int attemptTransformationsAtPosition(String encoded, StringBuffer buff, int position) {
+		int position0 = position;
+		position = checkAllTransformations(encoded, buff, position);
+		if (position0 == position) {
+			buff.append(encoded.charAt(position));
+			++position;
 		}
-		return pos;
+		return position;
 	}
 
 	/**
 	 * Check each inner substitution rule against the indicated position in the string.
 	 * @param encoded the input string
 	 * @param buff accumulated changes to that string
-	 * @param pos position within encoded to be checked
+	 * @param position position within encoded to be checked
 	 * @return
 	 */
-	private static int checkAllTransformations(String encoded, StringBuffer buff, int pos) {
-		for (Substitutions subst : innerSubst) {
-			if (keyMatchesAtThisPosition(encoded, pos, subst)) {
-				buff.append(subst.getReplacement());
-				pos += subst.getKey().length();
+	private static int checkAllTransformations(String encoded, StringBuffer buff, int position) {
+		for (Substitutions substitution : innerSubstitutions) {
+			if (keyMatchesAtThisPosition(encoded, position, substitution)) {
+				buff.append(substitution.getReplacement());
+				position += substitution.getKey().length();
 				break;
 			}
 		}
-		return pos;
+		return position;
 	}
 
 	/**
 	 * Test to see if the indicated string can match a substitution key at
 	 * a specific position.
 	 * @param encoded the string to be checked
-	 * @param pos ths position within encoded at which to check
-	 * @param subst a substitution
+	 * @param position ths position within encoded at which to check
+	 * @param substitution a substitution
 	 * @return true if the substitution key matches the contents of encoded starting at pos
 	 */
-	private static boolean keyMatchesAtThisPosition(String encoded, int pos, Substitutions subst) {
-		return pos < encoded.length() - subst.getKey().length() &&
-				(encoded.substring(pos, pos + subst.getKey().length()).equals(subst.getKey()));
+	private static boolean keyMatchesAtThisPosition(String encoded, int position, Substitutions substitution) {
+		return position < encoded.length() - substitution.getKey().length() &&
+				(encoded.substring(position, position + substitution.getKey().length()).equals(substitution.getKey()));
 	}
 
 	/**
@@ -221,10 +225,10 @@ public class SoundEx {
 	 * @return the modified string
 	 */
 	private static String suffixTransformations(String encoded) {
-		for (Substitutions subst : suffixSubst) {
-			if (encoded.endsWith(subst.getKey())) {
-				encoded = encoded.substring(0, encoded.length() - subst.getKey().length())
-						+ subst.getReplacement();
+		for (Substitutions substitution : suffixSubstitutions) {
+			if (encoded.endsWith(substitution.getKey())) {
+				encoded = encoded.substring(0, encoded.length() - substitution.getKey().length())
+						+ substitution.getReplacement();
 				break;
 			}
 		}
@@ -237,9 +241,9 @@ public class SoundEx {
 	 * @return the modified string
 	 */
 	private static String prefixTransformations(String encoded) {
-		for (Substitutions subst : prefixSubst) {
-			if (encoded.startsWith(subst.getKey())) {
-				encoded = subst.getReplacement() + encoded.substring(subst.getKey().length());
+		for (Substitutions substitution : prefixSubstitutions) {
+			if (encoded.startsWith(substitution.getKey())) {
+				encoded = substitution.getReplacement() + encoded.substring(substitution.getKey().length());
 				break;
 			}
 		}
