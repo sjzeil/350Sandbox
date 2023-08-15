@@ -38,6 +38,11 @@ public class TestSoundEx {
         System.out.println("done");
     }
     
+    /**
+     * Check to see if two strings have matching soundex codes
+     * @param string1 first string
+     * @param string2 second string
+     */
     private static void match(String string1, String string2) {
         String s1 = SoundEx.soundEx(string1);
         String s2 = SoundEx.soundEx(string2);
@@ -47,6 +52,11 @@ public class TestSoundEx {
         }
     }
     
+    /**
+     * Check to see if two strings have different soundex codes
+     * @param string1 first string
+     * @param string2 second string
+     */
     private static void noMatch(String string1, String string2) {
         String s1 = SoundEx.soundEx(string1);
         String s2 = SoundEx.soundEx(string2);
