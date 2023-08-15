@@ -27,6 +27,10 @@ public class NearHomophones {
     public class CompareMappings implements Comparator<String> {
         private Map<String, Set<String>> soundAlike;
 
+        /**
+         * Construct a comparator.
+         * @param soundAlike mapping of soundex codes to words
+         */
         CompareMappings(Map<String, Set<String>> soundAlike) {
             this.soundAlike = soundAlike;
         }
