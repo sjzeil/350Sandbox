@@ -46,7 +46,7 @@ public class NearHomophones {
     /**
      * Main program to run the analysis.
      */
-    public static void main() {
+    public static void main(String[] arguments) {
         new NearHomophones().doIt();
     }
 
