@@ -13,8 +13,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * This program analyzes a spelling dictionary to determine the
+ * 10 largest sets of words that are considered near-homophones
+ * (approximately sounding alike) according to the SoundEx class.
+ */
 public class NearHomophones {
 
+    /**
+     * This class is used to compare two soundex codes by the size
+     * of the set of words associated with each code.
+     */
     public class CompareMappings implements Comparator<String> {
         private Map<String, Set<String>> soundAlike;
 
@@ -34,10 +43,17 @@ public class NearHomophones {
 
     }
 
-    public static void main(String[] args) {
+    /**
+     * Main program to run the analysis.
+     */
+    public static void main() {
         new NearHomophones().doIt();
     }
 
+    /**
+     * Member function to perform tha analysis of the
+     * near-homophones in the provided dictionary.
+     */
     public void doIt() {
         ArrayList<String> dictionary = new ArrayList<String>();
         Map<String, Set<String>> soundAlike = new HashMap<>();
