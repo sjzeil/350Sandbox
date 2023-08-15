@@ -149,13 +149,13 @@ public class SoundEx {
 	private static int attemptTransformationsAtPosition(String encoded, StringBuffer buff, int pos) {
 		boolean done = false;
 		for (Substitutions subst : innerSubst) {
-			if (pos < encoded.length() - subst.getKey().length()) {
-				if (encoded.substring(pos, pos + subst.getKey().length()).equals(subst.getKey())) {
+			if (pos < encoded.length() - subst.getKey().length() &&
+				(encoded.substring(pos, pos + subst.getKey().length()).equals(subst.getKey()))) {
 					buff.append(subst.getReplacement());
 					done = true;
 					pos += subst.getKey().length();
+					break;
 				}
-			}
 		}
 		if (!done) {
 			buff.append(encoded.charAt(pos));
