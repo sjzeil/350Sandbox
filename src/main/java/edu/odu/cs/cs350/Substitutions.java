@@ -25,6 +25,9 @@ public class Substitutions {
         return key;
     }
 
+    /**
+     * @return the replacement string
+     */
     public String getReplacement() {
         return repl;
     }

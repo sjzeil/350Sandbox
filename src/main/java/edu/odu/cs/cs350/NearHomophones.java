@@ -57,6 +57,44 @@ public class NearHomophones {
     public void doIt() {
         ArrayList<String> dictionary = new ArrayList<String>();
         Map<String, Set<String>> soundAlike = new HashMap<>();
+        loadDictionary(dictionary);
+        System.out.println("Loaded dictionary with " + dictionary.size() + " words.");
+
+        ArrayList<String> soundExCodes = new ArrayList<>();
+        collectNearHomophones(dictionary, soundAlike, soundExCodes);
+
+        Collections.sort(soundExCodes, new CompareMappings(soundAlike));
+
+        report(soundAlike, soundExCodes);
+
+    }
+
+    private void report(Map<String, Set<String>> soundAlike, ArrayList<String> soundExCodes) {
+        for (int i = 0; i < 10; ++i) {
+            System.out.print(soundExCodes.get(i) + " is the code for");
+            for (String word : soundAlike.get(soundExCodes.get(i))) {
+                System.out.print(" " + word);
+            }
+            System.out.println();
+            System.out.println();
+        }
+    }
+
+    private void collectNearHomophones(ArrayList<String> dictionary, Map<String, Set<String>> soundAlike,
+            ArrayList<String> soundExCodes) {
+        for (String word : dictionary) {
+            String soundEx1 = SoundEx.soundEx(word);
+            Set<String> homophones = soundAlike.get(soundEx1);
+            if (homophones == null) {
+                homophones = new TreeSet<>();
+                soundAlike.put(soundEx1, homophones);
+                soundExCodes.add(soundEx1);
+            }
+            homophones.add(word);
+        }
+    }
+
+    private void loadDictionary(ArrayList<String> dictionary) {
         Path inputFile = Paths.get("src", "test", "data", "words.txt");
         try (
                 BufferedReader in = new BufferedReader(new FileReader(inputFile.toFile()))) {
@@ -68,31 +106,6 @@ public class NearHomophones {
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
-        System.out.println("Loaded dictionary with " + dictionary.size() + " words.");
-
-        ArrayList<String> soundExCodes = new ArrayList<>();
-        for (String word : dictionary) {
-            String soundEx1 = SoundEx.soundEx(word);
-            Set<String> homophones = soundAlike.get(soundEx1);
-            if (homophones == null) {
-                homophones = new TreeSet<>();
-                soundAlike.put(soundEx1, homophones);
-                soundExCodes.add(soundEx1);
-            }
-            homophones.add(word);
-        }
-
-        Collections.sort(soundExCodes, new CompareMappings(soundAlike));
-
-        for (int i = 0; i < 10; ++i) {
-            System.out.print(soundExCodes.get(i) + " is the code for");
-            for (String word : soundAlike.get(soundExCodes.get(i))) {
-                System.out.print(" " + word);
-            }
-            System.out.println();
-            System.out.println();
-        }
-
     }
 
 }
