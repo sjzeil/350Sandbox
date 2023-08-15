@@ -1,5 +1,9 @@
 package edu.odu.cs.cs350;
 
+/**
+ * A set of simple tests - in a later section we will learn how to use
+ * a unit test framework to write things like this.
+ */
 public class TestSoundEx {
 
     private static final String[] nearHomophones = {
@@ -12,7 +16,11 @@ public class TestSoundEx {
         "sadder", "cider"
     };
 
-    public static void main(String[] args) {
+    /**
+     * main program to run a set of simple tests
+     * @param arguments
+     */
+    public static void main(String[] arguments) {
         match("to", "two");
         match("too", "two");
         match("so", "sew");
